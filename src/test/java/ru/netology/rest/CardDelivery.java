@@ -24,7 +24,7 @@ import static com.codeborne.selenide.Selenide.*;
 public class CardDelivery {
     int delay = 15;
 
-    //private WebDriver driver;
+    private WebDriver driver;
 
     @BeforeAll
     static void setUpAll() {
@@ -34,22 +34,22 @@ public class CardDelivery {
     @BeforeEach
     void setUp() {
 
-/*        ChromeOptions options = new ChromeOptions();
+        ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--no-sandbox");
         options.addArguments("--headless");
         driver = new ChromeDriver(options);
-        //driver.get("http://localhost:9999");*/
+        driver.get("http://localhost:9999");
         open("http://localhost:9999/");
     }
 
-/*    @AfterEach
+    @AfterEach
     void tearDown() {
         if (driver != null) {
             driver.quit();
             driver = null;
         }
-    }*/
+    }
 
     @Test
     void sendIfDataSuccessful() {

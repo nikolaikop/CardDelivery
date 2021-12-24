@@ -16,13 +16,14 @@ import static com.codeborne.selenide.Selenide.*;
 public class CardDelivery {
     int delay = 15;
 
-    @BeforeEach
+/*    @BeforeEach
     void setUp() {
         open("http://localhost:9999");
-    }
+    }*/
 
     @Test
     void sendIfDataSuccessful() {
+        open("http://localhost:9999");
         $("[placeholder=Город]").setValue("Санкт-Петербург");
         String inputDate = LocalDate.now().plusDays(4).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         SelenideElement data = $("[data-test-id=date]");

@@ -52,7 +52,7 @@ public class CardDelivery {
     }*/
 
     @Test
-    void sendIfDataSuccessful() {
+    void sendIfDataSuccessful () throws InterruptedException{
         open("http://localhost:9999/");
         $("[placeholder=Город]").setValue("Санкт-Петербург");
         String inputDate = LocalDate.now().plusDays(4).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));

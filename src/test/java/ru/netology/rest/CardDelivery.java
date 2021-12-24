@@ -23,6 +23,7 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class CardDelivery {
     int delay = 15;
+    int add7Days = 7;
 
     @BeforeEach
     void setUp() {
@@ -46,6 +47,24 @@ public class CardDelivery {
                 Duration.ofSeconds(delay));
         $("[data-test-id='notification'] .notification__content")
                 .shouldHave(Condition.text("Встреча успешно забронирована на " + inputDate));
+    }
+
+
+
+    @Test
+    void shouldSubmitTask2() {
+        $("[data-test-id=city] .input__control").setValue("Ха");
+        $$(".menu-item__control").findBy(text("Хабаровск")).click();
+        $(".icon-button__text>.icon_name_calendar").click();
+        $$(".calendar__day").findBy(text(LocalDate.now().plusDays(add7Days).format(DateTimeFormatter.ofPattern("d")))).click();
+        $("[data-test-id=name] [name=name]").setValue("Николай Николаевич");
+        $("[data-test-id=phone] [name=phone]").setValue("+71234567890");
+        $("[data-test-id=agreement]>.checkbox__box").click();
+        $("button>.button__content").click();
+        $("[data-test-id='notification'] .notification__title").shouldHave(Condition.text("Успешно!"),
+                Duration.ofSeconds(delay));
+        $("[data-test-id='notification'] .notification__content")
+                .shouldHave(Condition.text("Встреча успешно забронирована на " + add7Days));
     }
 
 }

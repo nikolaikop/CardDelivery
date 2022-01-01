@@ -20,15 +20,18 @@ import static com.codeborne.selenide.Selenide.*;
 public class CardDelivery {
     int delay = 15;
 
-    @NotNull
-    private String when(boolean chose) {
-        Calendar cl = new GregorianCalendar();
-        cl.add(Calendar.DATE, 7);
-        if (chose) {
-            return new SimpleDateFormat("d").format(cl.getTime());
-        } else {
-            return new SimpleDateFormat("dd.MM.yyyy").format(cl.getTime());
-        }
+    int add7Days = 7;
+
+    String getFormattedDate(int add7Days, String patternOfDate) {
+        return LocalDate.now().plusDays(add7Days).format(DateTimeFormatter.ofPattern(patternOfDate));
+    }
+
+    int yearOffset(int add7Days) {
+        return LocalDate.now().plusDays(add7Days).getYear() - LocalDate.now().plusDays(3).getYear();
+    }
+
+    int monthOffset(int add7Days) {
+        return LocalDate.now().plusDays(add7Days).getMonthValue() - LocalDate.now().plusDays(3).getMonthValue();
     }
 
     @BeforeEach
@@ -142,13 +145,31 @@ public class CardDelivery {
     void shouldSubmitTask2() {
         $("[data-test-id=city] .input__control").setValue("Ха");
         $$(".menu-item__control").findBy(text("Хабаровск")).click();
-        $("[data-test-id=date] [placeholder=\"Дата встречи\"]").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE, when(false), Keys.CONTROL + "A", Keys.DELETE);
-        $$(".calendar__day").findBy(text(when(true))).click();
+        $(".icon-button__text>.icon_name_calendar").click();
+        if (yearOffset(add7Days = 7) > 0) {
+            for (int i = 0; i < yearOffset(add7Days = 7); i++) {
+                $(".calendar__arrow_direction_right[data-step='12']").click();
+            }
+            if (monthOffset(add7Days = 7) > 0) {
+                for (int i = 0; i < monthOffset(add7Days = 7); i++) {
+                    $(".calendar__arrow_direction_right[data-step='1']").click();
+                }
+            } else {
+                for (int i = 0; i > monthOffset(add7Days = 7); i--) {
+                    $(".calendar__arrow_direction_left[data-step='-1']").click();
+                }
+            }
+        } else {
+            for (int i = 0; i < monthOffset(add7Days = 7); i++) {
+                $(".calendar__arrow_direction_right[data-step='1']").click();
+            }
+        }
+        $$(".calendar__day").findBy(text(LocalDate.now().plusDays(add7Days = 7).format(DateTimeFormatter.ofPattern("d")))).click();
         $("[data-test-id=name] [name=name]").setValue("Николай Николаевич");
         $("[data-test-id=phone] [name=phone]").setValue("+71234567890");
         $("[data-test-id=agreement]>.checkbox__box").click();
         $("button>.button__content").click();
-        $("[data-test-id=notification]").shouldBe(visible, Duration.ofSeconds(delay)).shouldHave(exactText("Успешно! Встреча успешно забронирована на " + when(false)));
+        $("[data-test-id=notification]").shouldBe(visible, Duration.ofSeconds(delay)).shouldHave(exactText("Успешно! Встреча успешно забронирована на " + getFormattedDate(add7Days, "dd.MM.yyyy")));
     }
 
 }

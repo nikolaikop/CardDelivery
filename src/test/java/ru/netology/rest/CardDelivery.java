@@ -20,8 +20,6 @@ import static com.codeborne.selenide.Selenide.*;
 public class CardDelivery {
     int delay = 15;
 
-    int add7Days = 7;
-
     String getFormattedDate(int add7Days, String patternOfDate) {
         return LocalDate.now().plusDays(add7Days).format(DateTimeFormatter.ofPattern(patternOfDate));
     }
@@ -143,6 +141,7 @@ public class CardDelivery {
 
     @Test
     void shouldSubmitTask2() {
+        int add7Days = 7;
         $("[data-test-id=city] .input__control").setValue("Ха");
         $$(".menu-item__control").findBy(text("Хабаровск")).click();
         $(".icon-button__text>.icon_name_calendar").click();
